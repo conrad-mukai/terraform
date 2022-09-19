@@ -22,7 +22,7 @@ the following would be produced:
 | us-west-2c | 10.0.32.0/20 | 10.0.192.0/18 |
 For a 6 subnet VPC the inputs could be:
 ```
-cidr               = "172.17.0.0/16"
+cidr               = "172.16.0.0/16"
 availability_zones = [
   "us-east-1a", "us-east-1b", "us-east-1c",
   "us-east-1d", "us-east-1e", "us-east-1f"
@@ -31,12 +31,12 @@ availability_zones = [
 and the results would be:
 | availability zone | public CIDR | private CIDR |
 | ----------------- | ----------- | ------------ |
-| us-east-1a | 172.17.0.0/22 | 172.17.32.0/19 |
-| us-east-1b | 172.17.4.0/22 | 172.17.64.0/19 |
-| us-east-1c | 172.17.8.0/22 | 172.17.96.0/19 |
-| us-east-1d | 172.17.12.0/22 | 172.17.128.0/19 |
-| us-east-1e | 172.17.16.0/22 | 172.17.160.0/19 |
-| us-east-1f | 172.17.20.0/22 | 172.17.192.0/19 |
+| us-east-1a | 172.16.0.0/22 | 172.16.32.0/19 |
+| us-east-1b | 172.16.4.0/22 | 172.16.64.0/19 |
+| us-east-1c | 172.16.8.0/22 | 172.16.96.0/19 |
+| us-east-1d | 172.16.12.0/22 | 172.16.128.0/19 |
+| us-east-1e | 172.16.16.0/22 | 172.16.160.0/19 |
+| us-east-1f | 172.16.20.0/22 | 172.16.192.0/19 |
 
 ## Requirements
 
@@ -78,6 +78,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | list of availability zones | `list(string)` | n/a | yes |
 | <a name="input_cidr"></a> [cidr](#input\_cidr) | VPC CIDR | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | name for tagging | `string` | n/a | yes |
 
 ## Outputs
 

@@ -7,6 +7,11 @@ variable "region" {
   description = "AWS region"
 }
 
+variable "name" {
+  type        = string
+  description = "name for tagging"
+}
+
 variable "vpc_cidr" {
   type        = string
   description = "VPC CIDR"

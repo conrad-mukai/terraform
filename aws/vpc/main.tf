@@ -22,7 +22,7 @@
  * | us-west-2c | 10.0.32.0/20 | 10.0.192.0/18 |
  * For a 6 subnet VPC the inputs could be:
  * ```
- * cidr               = "172.17.0.0/16"
+ * cidr               = "172.16.0.0/16"
  * availability_zones = [
  *   "us-east-1a", "us-east-1b", "us-east-1c",
  *   "us-east-1d", "us-east-1e", "us-east-1f"
@@ -31,12 +31,12 @@
  * and the results would be:
  * | availability zone | public CIDR | private CIDR |
  * | ----------------- | ----------- | ------------ |
- * | us-east-1a | 172.17.0.0/22 | 172.17.32.0/19 |
- * | us-east-1b | 172.17.4.0/22 | 172.17.64.0/19 |
- * | us-east-1c | 172.17.8.0/22 | 172.17.96.0/19 |
- * | us-east-1d | 172.17.12.0/22 | 172.17.128.0/19 |
- * | us-east-1e | 172.17.16.0/22 | 172.17.160.0/19 |
- * | us-east-1f | 172.17.20.0/22 | 172.17.192.0/19 |
+ * | us-east-1a | 172.16.0.0/22 | 172.16.32.0/19 |
+ * | us-east-1b | 172.16.4.0/22 | 172.16.64.0/19 |
+ * | us-east-1c | 172.16.8.0/22 | 172.16.96.0/19 |
+ * | us-east-1d | 172.16.12.0/22 | 172.16.128.0/19 |
+ * | us-east-1e | 172.16.16.0/22 | 172.16.160.0/19 |
+ * | us-east-1f | 172.16.20.0/22 | 172.16.192.0/19 |
  */
 
 
@@ -46,6 +46,9 @@
 
 resource "aws_vpc" "this" {
   cidr_block = var.cidr
+  tags = {
+    Name = var.name
+  }
 }
 
 
@@ -66,6 +69,9 @@ resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.this.id
   availability_zone = var.availability_zones[count.index]
   cidr_block        = local.public_cidrs[count.index]
+  tags = {
+    Name = "public-${var.name}-${count.index + 1}"
+  }
 }
 
 resource "aws_subnet" "private" {
@@ -73,6 +79,9 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.this.id
   availability_zone = var.availability_zones[count.index]
   cidr_block        = local.private_cidrs[count.index]
+  tags = {
+    Name = "private-${var.name}-${count.index + 1}"
+  }
 }
 
 
@@ -82,6 +91,9 @@ resource "aws_subnet" "private" {
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.this.id
+  tags = {
+    Name = var.name
+  }
 }
 
 resource "aws_eip" "eni" {
@@ -90,12 +102,18 @@ resource "aws_eip" "eni" {
   depends_on = [
     aws_internet_gateway.igw
   ]
+  tags = {
+    Name = "${var.name}-${count.index + 1}"
+  }
 }
 
 resource "aws_nat_gateway" "ngw" {
   count         = local.num_azs
   allocation_id = aws_eip.eni[count.index].id
   subnet_id     = aws_subnet.public[count.index].id
+  tags = {
+    Name = "${var.name}-${count.index + 1}"
+  }
 }
 
 
@@ -105,6 +123,9 @@ resource "aws_nat_gateway" "ngw" {
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
+  tags = {
+    Name = "public-${var.name}"
+  }
 }
 
 resource "aws_route" "public" {
@@ -122,6 +143,9 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table" "private" {
   count  = local.num_azs
   vpc_id = aws_vpc.this.id
+  tags = {
+    Name = "private-${var.name}-${count.index + 1}"
+  }
 }
 
 resource "aws_route" "private" {

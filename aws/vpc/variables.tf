@@ -2,6 +2,11 @@
  * VPC Module Inputs
  */
 
+variable "name" {
+  type        = string
+  description = "name for tagging"
+}
+
 variable "cidr" {
   type        = string
   description = "VPC CIDR"

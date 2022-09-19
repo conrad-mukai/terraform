@@ -18,6 +18,7 @@ provider "aws" {
 
 module "vpc" {
   source             = "./.."
+  name               = var.name
   cidr               = var.vpc_cidr
   availability_zones = var.availability_zones
 }
